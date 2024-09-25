@@ -118,23 +118,24 @@
         label-width="150px"
         size="small"
         style="padding-right: 40px"
+        :rules = "rules"
       >
-        <el-form-item label="旧任务编号">
+        <el-form-item label="旧任务编号" prop = "oldTaskCode">
           <el-input v-model="sysEquipTransfer.oldTaskCode" />
         </el-form-item>
-        <el-form-item label="新任务编号">
+        <el-form-item label="新任务编号" prop = "newTaskCode">
           <el-input v-model="sysEquipTransfer.newTaskCode" />
         </el-form-item>
-        <el-form-item label="设备编号">
+        <el-form-item label="设备编号" prop = "equipmentCode">
           <el-input v-model="sysEquipTransfer.equipmentCode" />
         </el-form-item>
-        <el-form-item label="交付员工编号">
+        <el-form-item label="交付员工编号" prop = "deliverEmployeeCode">
           <el-input v-model="sysEquipTransfer.deliverEmployeeCode" />
         </el-form-item>
-        <el-form-item label="接收员工编号">
+        <el-form-item label="接收员工编号" prop = "receiverEmployeeCode">
           <el-input v-model="sysEquipTransfer.receiverEmployeeCode" />
         </el-form-item>
-        <el-form-item label="交接日期">
+        <el-form-item label="交接日期" prop = "transferDate">
           <el-date-picker
             v-model="sysEquipTransfer.transferDate"
             type="date"
@@ -143,7 +144,7 @@
             @input="dateChange">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="交接地点">
+        <el-form-item label="交接地点" prop = "transferLocation">
           <el-cascader
             size="large"
             :options="pcTextArr"
@@ -152,10 +153,10 @@
             @change="handleLocationChange">
           </el-cascader>
         </el-form-item>
-        <el-form-item label="交接类型">
+        <el-form-item label="交接类型" prop = "transferType">
           <el-input v-model="sysEquipTransfer.transferType" />
         </el-form-item>
-        <el-form-item label="备注">
+        <el-form-item label="备注" prop = "remarks">
           <el-input v-model="sysEquipTransfer.remarks" />
         </el-form-item>
       </el-form>
@@ -199,6 +200,30 @@ export default {
 
       pcTextArr,//省市二级地址，纯汉字
       selectedLocations:[],// 选中的省市地址数据
+
+      rules:{// 表单校验规则
+        oldTaskCode:[
+          { required : true , message : "必填" },
+        ],
+        newTaskCode:[
+          { required : true , message : "必填" },
+        ],
+        equipmentCode:[
+          { required : true , message : "必填" },
+        ],
+        deliverEmployeeCode:[
+          { required : true , message : "必填" },
+        ],
+        receiverEmployeeCode:[
+          { required : true , message : "必填" },
+        ],
+        transferDate:[
+          { required : true , message : "必填" },
+        ],
+        transferLocation:[
+          { required : true , message : "必填" },
+        ],
+      },
     };
   },
   created() {
@@ -332,11 +357,18 @@ export default {
 
     //添加或修改
     saveOrUpdate() {
-      if (!this.sysEquipTransfer.id) {
-        this.saveEquipTransfer();
-      } else {
-        this.updateEquipTransfer();
-      }
+      this.$refs.dataForm.validate((valid) =>{
+        if(valid){
+          if (!this.sysEquipTransfer.id) {
+            this.saveEquipTransfer();
+          } else {
+            this.updateEquipTransfer();
+          }
+        } else{
+          this.$message.error('请完善表单相关信息！');
+          return false;
+        }f
+      })
     },
 
     //修改方法

@@ -120,14 +120,15 @@
         label-width="150px"
         size="small"
         style="padding-right: 40px"
+        :rules = "rules"
       >
-        <!-- <el-form-item label="设备名称">
+        <!-- <el-form-item label="设备名称" prop = "equipmentName">
           <el-input v-model="sysEquipStock.equipmentName" />
         </el-form-item> -->
-        <el-form-item label="设备编号">
-          <el-input v-model="sysEquipStock.equipmentCode" />
+        <el-form-item label="设备编号" prop = "equipmentCode">
+          <el-input v-model="sysEquipStock.equipmentCode"/>
         </el-form-item>
-        <el-form-item label="设备出库日期">
+        <el-form-item label="设备出库日期" prop = "equipmentDate">
           <el-date-picker
             v-model="sysEquipStock.equipmentDate"
             type="date"
@@ -136,26 +137,26 @@
             @input="dateChange">
           </el-date-picker>
         </el-form-item>
-        <!-- <el-form-item label="出库人">
+        <!-- <el-form-item label="出库人" prop = "userName">
           <el-input v-model="sysEquipStock.userName" />
         </el-form-item> -->
-        <el-form-item label="出库人工号">
+        <el-form-item label="出库人工号" prop = "userCode">
           <el-input v-model="sysEquipStock.userCode" />
         </el-form-item>
-        <el-form-item label="任务单号">
+        <el-form-item label="任务单号" prop = "taskCode">
           <el-input v-model="sysEquipStock.taskCode" />
         </el-form-item>
-        <!-- <el-form-item label="仓库管理员">
+        <!-- <el-form-item label="仓库管理员" prop = "warehouseManagerName">
           <el-input v-model="sysEquipStock.warehouseManagerName" />
         </el-form-item> -->
-        <el-form-item label="仓库管理员工号">
+        <el-form-item label="仓库管理员工号" prop = "warehouseManagerCode">
           <el-input v-model="sysEquipStock.warehouseManagerCode" />
         </el-form-item>        
-        <el-form-item label="出入库类型">
+        <el-form-item label="出入库类型" prop = "type">
           <el-radio disabled v-model="sysEquipStock.type" label="出库">出库</el-radio>
           <el-radio disabled v-model="sysEquipStock.type" label="入库">入库</el-radio>
         </el-form-item>
-        <el-form-item label="备注">
+        <el-form-item label="备注" prop = "remarks">
           <el-input v-model="sysEquipStock.remarks" />
         </el-form-item>
       </el-form>
@@ -195,6 +196,27 @@ export default {
       sysEquipStock: {}, //封装添加表单数据
       multipleSelection: [], // 批量删除选中的记录列表
       createTimes: [],
+
+      rules:{// 表单校验规则
+        equipmentCode:[
+          {required : true , message : "必填" },
+        ],
+        equipmentDate:[
+          {required : true , message : "必填" },
+        ],
+        userCode:[
+          {required : true , message : "必填" },
+        ],
+        taskCode:[
+          {required : true , message : "必填" },
+        ],
+        warehouseManagerCode:[
+          {required : true , message : "必填" },
+        ],
+        type:[
+          {required : true , message : "必填" },
+        ],
+      },
     };
   },
   created() {
@@ -264,6 +286,7 @@ export default {
         });
       });
     },
+
     //修改-数据回显
     edit(id) {
       this.dialogVisible = true;
@@ -271,14 +294,23 @@ export default {
         this.sysEquipStock = response.data;
       });
     },
+
     //添加或修改
     saveOrUpdate() {
-      if (!this.sysEquipStock.id) {
-        this.saveEquipStock();
-      } else {
-        this.updateEquipStock();
-      }
+      this.$refs.dataForm.validate((valid) => {
+        if(valid){
+          if (!this.sysEquipStock.id) {
+            this.saveEquipStock();
+          } else {
+            this.updateEquipStock();
+          }
+        } else{
+          this.$message.error('请完善表单相关信息！');
+          return false;
+        }
+      })
     },
+
     //修改方法
     updateEquipStock() {
       api.update(this.sysEquipStock).then((response) => {
@@ -293,6 +325,7 @@ export default {
         this.fetchData();
       });
     },
+
     //添加
     saveEquipStock() {
       api.saveEquipStock(this.sysEquipStock).then((response) => {
@@ -307,6 +340,8 @@ export default {
         this.fetchData();
       });
     },
+
+
     //弹出添加的表单
     add() {
       this.dialogVisible = true;
@@ -314,6 +349,7 @@ export default {
       this.sysEquipStock.type = "入库";
       this.sysEquipStock.equipmentDate =  new Date();
     },
+    
      // 根据id删除数据
      removeDataById(id) {
       // debugger
@@ -334,6 +370,7 @@ export default {
         });
       });
     },
+
     // 重置表单
     resetData() {
       console.log("重置查询表单");

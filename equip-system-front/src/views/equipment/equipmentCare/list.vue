@@ -116,14 +116,15 @@
         label-width="150px"
         size="small"
         style="padding-right: 40px"
+        :rules = "rules"
       >
-        <el-form-item label="员工编号">
+        <el-form-item label="员工编号" prop = "employeeCode">
           <el-input v-model="sysEquipMain.employeeCode" />
         </el-form-item>
-        <el-form-item label="设备编号">
+        <el-form-item label="设备编号" prop = "equipmentCode">
           <el-input v-model="sysEquipMain.equipmentCode" />
         </el-form-item>
-        <el-form-item label="保养日期">
+        <el-form-item label="保养日期" prop = "maintenanceDate">
           <el-date-picker
             v-model="sysEquipMain.maintenanceDate"
             type="date"
@@ -132,14 +133,14 @@
             @input="dateChange">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="设备使用前状态">
+        <el-form-item label="设备使用前状态" prop = "beforeUseStatus">
           <el-radio v-model="sysEquipMain.beforeUseStatus" label="正常">正常</el-radio>
           <el-radio v-model="sysEquipMain.beforeUseStatus" label="异常">异常</el-radio>
         </el-form-item>
-        <el-form-item label="设备维护保养状态">
+        <el-form-item label="设备维护保养状态" prop = "maintenanceStatus">
           <el-input v-model="sysEquipMain.maintenanceStatus" />
         </el-form-item>
-        <el-form-item label="备注">
+        <el-form-item label="备注" prop = "remarks">
           <el-input v-model="sysEquipMain.remarks" />
         </el-form-item>
       </el-form>
@@ -179,6 +180,24 @@ export default {
       sysEquipMain: {}, //封装添加表单数据
       multipleSelection: [], // 批量删除选中的记录列表
       createTimes: [],
+
+      rules:{// 表单校验规则
+        employeeCode:[
+          { required : true , message : "必填" },
+        ],
+        equipmentCode:[
+          { required : true , message : "必填" },
+        ],
+        maintenanceDate:[
+          { required : true , message : "必填" },
+        ],
+        beforeUseStatus:[
+          { required : true , message : "必填" },
+        ],
+        maintenanceStatus:[
+          { required : true , message : "必填" },
+        ],
+      },
     };
   },
   created() {
@@ -246,6 +265,7 @@ export default {
         });
       });
     },
+
     //修改-数据回显
     edit(id) {
       this.dialogVisible = true;
@@ -253,14 +273,23 @@ export default {
         this.sysEquipMain = response.data;
       });
     },
+
     //添加或修改
     saveOrUpdate() {
-      if (!this.sysEquipMain.id) {
-        this.saveEquipMain();
-      } else {
-        this.updateEquipMain();
-      }
+      this.$refs.dataForm.validate((valid) =>{
+        if(valid){
+          if (!this.sysEquipMain.id) {
+            this.saveEquipMain();
+          } else {
+            this.updateEquipMain();
+          }
+        } else{
+          this.$message.error('请完善表单相关信息！');
+          return false;
+        }
+      })
     },
+
     //修改方法
     updateEquipMain() {
       api.update(this.sysEquipMain).then((response) => {
@@ -275,6 +304,7 @@ export default {
         this.fetchData();
       });
     },
+
     //添加
     saveEquipMain() {
       api.saveEquipMain(this.sysEquipMain).then((response) => {

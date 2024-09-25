@@ -115,14 +115,15 @@
         label-width="150px"
         size="small"
         style="padding-right: 40px"
+        :rules = "rules"
       >
-        <el-form-item label="目测人id">
+        <el-form-item label="目测人id" prop = "employeeCode">
           <el-input v-model="sysEquipDetction.employeeCode" />
         </el-form-item>
-        <el-form-item label="任务单号">
+        <el-form-item label="任务单号" prop = "taskCode">
           <el-input v-model="sysEquipDetction.taskCode" />
         </el-form-item>
-        <el-form-item label="开始日期">
+        <el-form-item label="开始日期" prop = "startDate">
           <el-date-picker
             v-model="sysEquipDetction.startDate"
             type="date"
@@ -131,7 +132,7 @@
             @input="dateChange">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="结束日期">
+        <el-form-item label="结束日期" prop = "endDate">
           <el-date-picker
             v-model="sysEquipDetction.endDate"
             type="date"
@@ -140,7 +141,7 @@
             @input="dateChange">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="任务地点">
+        <el-form-item label="任务地点" prop = "detectionLocation">
           <el-select v-model="sysEquipDetction.detectionLocation" placeholder="请选择">
           <el-option
             v-for="item in pcTextArr"
@@ -149,7 +150,7 @@
           </el-option>
         </el-select>
         </el-form-item>
-        <el-form-item label="备注">
+        <el-form-item label="备注" prop = "remarks">
           <el-input v-model="sysEquipDetction.remarks" />
         </el-form-item>
       </el-form>
@@ -194,6 +195,24 @@ export default {
       createTimes: [],
 
       pcTextArr,
+
+      rules:{// 表单校验规则
+        employeeCode:[
+          { required : true , message : "必填" },
+        ],
+        taskCode:[
+          { required : true , message : "必填" },
+        ],
+        startDate:[
+          { required : true , message : "必填" },
+        ],
+        endDate:[
+          { required : true , message : "必填" },
+        ],
+        detectionLocation:[
+          { required : true , message : "必填" },
+        ],
+      },
     };
   },
   created() {
@@ -271,14 +290,23 @@ export default {
         
       });
     },
+
     //添加或修改
     saveOrUpdate() {
-      if (!this.sysEquipDetction.id) {
-        this.saveEquipDetection();
-      } else {
-        this.updateEquipDetection();
-      }
+      this.$refs.dataForm.validate((valid) =>{
+        if(valid){
+          if (!this.sysEquipDetction.id) {
+            this.saveEquipDetection();
+          } else {
+            this.updateEquipDetection();
+          }
+        } else{
+          this.$message.error('请完善表单相关信息！');
+          return false;
+        }
+      })
     },
+
     //修改方法
     updateEquipDetection() {
       api.update(this.sysEquipDetction).then((response) => {
