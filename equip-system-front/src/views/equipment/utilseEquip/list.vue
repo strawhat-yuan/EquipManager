@@ -73,7 +73,7 @@
       </el-table-column>
 
       <!-- <el-table-column prop="equipmentName" label="设备名称" sortable="custom"/> -->
-      <el-table-column prop="equipmentCode" label="管理编号" sortable="custom"/>
+      <el-table-column prop="equipmentCode" label="设备编号" sortable="custom"/>
       <el-table-column prop="taskCode" label="任务单号" sortable="custom"/>
       <el-table-column prop="equipmentUseDate" label="使用日期" sortable="custom"/>
       <el-table-column prop="employeeUseCode" label="使用人工号"/>
@@ -126,7 +126,7 @@
         <!-- <el-form-item label="设备名称"  prop = "equipmentName">
           <el-input v-model="sysEquipUse.equipmentName" />
         </el-form-item> -->
-        <el-form-item label="管理编号"  prop = "equipmentCode">
+        <el-form-item label="设备编号"  prop = "equipmentCode">
           <el-input v-model="sysEquipUse.equipmentCode" />
         </el-form-item>
         <el-form-item label="任务单号" prop = "taskCode">

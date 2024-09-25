@@ -9,7 +9,7 @@
               <el-input
                 style="width: 100%"
                 v-model="searchObj.keyword"
-                placeholder="任务编号/员工编号/地点"
+                placeholder="任务单号/目测人工号/地点"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -70,7 +70,7 @@
           {{ (page - 1) * limit + scope.$index + 1 }}
         </template>
       </el-table-column>
-      <el-table-column prop="employeeCode" label="目测人编号" sortable="custom"/>
+      <el-table-column prop="employeeCode" label="目测人工号" sortable="custom"/>
       <el-table-column prop="taskCode" label="任务单号" sortable="custom"/>
       <el-table-column prop="startDate" label="开始日期" sortable="custom"/>
       <el-table-column prop="endDate" label="结束日期" sortable="custom"/>

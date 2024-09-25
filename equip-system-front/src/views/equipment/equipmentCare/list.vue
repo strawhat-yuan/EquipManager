@@ -9,7 +9,7 @@
               <el-input
                 style="width: 100%"
                 v-model="searchObj.keyword"
-                placeholder="设备编号/员工编号"
+                placeholder="设备编号/保养人工号"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -71,7 +71,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="employeeCode" label="员工编号" sortable="custom"/>
+      <el-table-column prop="employeeCode" label="保养人工号" sortable="custom"/>
       <el-table-column prop="equipmentCode" label="设备编号" sortable="custom"/>
       <el-table-column prop="maintenanceDate" label="保养日期" sortable="custom"/>
       <el-table-column prop="beforeUseStatus" label="设备使用前状态" sortable="custom"/>
@@ -118,7 +118,7 @@
         style="padding-right: 40px"
         :rules = "rules"
       >
-        <el-form-item label="员工编号" prop = "employeeCode">
+        <el-form-item label="保养人工号" prop = "employeeCode">
           <el-input v-model="sysEquipMain.employeeCode" />
         </el-form-item>
         <el-form-item label="设备编号" prop = "equipmentCode">

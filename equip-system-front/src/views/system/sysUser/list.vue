@@ -6,7 +6,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="关键字">
-              <el-input style="width: 100%" v-model="searchObj.keyword" placeholder="用户姓名/用户编号/电话/用户详情" @keyup.enter.native="fetchData()"></el-input>
+              <el-input style="width: 100%" v-model="searchObj.keyword" placeholder="用户姓名/用户工号/电话/用户详情" @keyup.enter.native="fetchData()"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -46,7 +46,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="userCode" label="用户编号" sortable="custom"/>
+      <el-table-column prop="userCode" label="用户工号" sortable="custom"/>
       <el-table-column prop="userName" label="用户姓名" sortable="custom"/>
       <el-table-column prop="description" label="用户详情" />
       <el-table-column prop="phone" label="电话号码" />
@@ -87,7 +87,7 @@
         <el-form-item label="用户姓名" prop = "userName">
           <el-input v-model="sysUser.userName"/>
         </el-form-item>
-        <el-form-item label="用户编号" prop = "userCode">
+        <el-form-item label="用户工号" prop = "userCode">
           <el-input v-model="sysUser.userCode"/>
         </el-form-item>
         <el-form-item label="密码"   v-if="!sysUser.id" prop="password">
@@ -167,9 +167,6 @@ export default{
                 { required : true , message : "必填" },
               ],
               password:[
-                { required : true , message : "必填" },
-              ],
-              description:[
                 { required : true , message : "必填" },
               ],
               phone:[
