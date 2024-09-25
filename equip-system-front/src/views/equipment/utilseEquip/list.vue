@@ -275,14 +275,9 @@ export default {
     
     //输入建议关键词筛选方法
     createFilter(queryString){
-      const regExp = new RegExp(queryString,'i');
-      return (matchNameList) =>{
-        return (regExp.test(matchNameList.value));
+        return (matchNameList) =>{
+        return (matchNameList.value.toLowerCase().match(queryString.toLowerCase()));
       };
-
-      // return (matchNameList) =>{
-      //   return (matchNameList.value.toLowerCase().indexOf(queryString.toLowerCase()) == 0);
-      // };
     },
 
     // 输入建议数据加载方法
@@ -526,7 +521,7 @@ export default {
           this.list = response.data.records;
           this.total = response.data.total;
           // console.log(response.data.records);
-          // console.log(pcTextArr);
+          // console.log(pcTextArr); 
         });
     },
   },
