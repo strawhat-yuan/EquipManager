@@ -152,7 +152,7 @@ export default{
 
         // 分配权限跳转方法
         showAssignAuth(row){
-          this.$router.push('/system/assignAuth?id='+row.id+'&keyword='+row.keyword);
+          this.$router.push('/system/assignAuth?id='+row.id+'&roleName='+row.roleName);
         },
 
 
