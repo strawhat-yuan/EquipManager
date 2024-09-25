@@ -109,15 +109,15 @@
     <!-- 角色分配弹框 -->
     <el-dialog title="分配角色" :visible.sync="dialogRoleVisible">
       <el-form label-width="80px">
-        <el-form-item label="用户名">
-          <el-input disabled :value="sysUser.username"></el-input>
+        <el-form-item label="用户工号">
+          <el-input disabled :value="sysUser.userCode"></el-input>
         </el-form-item>
 
         <el-form-item label="角色列表">
           <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
           <div style="margin: 15px 0;"></div>
           <el-checkbox-group v-model="userRoleIds" @change="handleCheckedChange">
-            <el-checkbox v-for="role in allRoles" :key="role.id" :label="role.id">{{role.keyword}}</el-checkbox>
+            <el-checkbox v-for="role in allRoles" :key="role.id" :label="role.id">{{role.roleName}}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
       </el-form>
@@ -184,8 +184,11 @@ export default{
         this.sysUser = row
         this.dialogRoleVisible = true
           roleApi.getRolesByUserId(row.id).then(response => {
+            console.log("into method")
             this.allRoles = response.data.allRoles
+            console.log(this.allRoles)
             this.userRoleIds = response.data.userRoleIds
+            console.log(this.userRoleIds)
             this.checkAll = this.userRoleIds.length == this.allRoles.length
             this.isIndeterminate = this.userRoleIds.length>0 && this.userRoleIds.length<this.allRoles.length
           })
