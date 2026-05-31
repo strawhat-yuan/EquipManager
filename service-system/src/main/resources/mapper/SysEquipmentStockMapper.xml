@@ -17,13 +17,14 @@
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
             <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
             <result property="isTransfer" column="is_transfer" jdbcType="TINYINT"/>
+            <result property="equipmentStatus" column="equipment_status" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,equipment_code,equipment_date,
         user_code,task_code,remarks,
         type,warehouse_manager_code,create_time,
-        update_time,is_deleted,is_transfer
+        update_time,is_deleted,is_transfer,equipment_status
     </sql>
 
 

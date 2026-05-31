@@ -87,13 +87,13 @@
 					<tm-city-picker selectedModel="name" v-model="citydata" v-model:show="showcitydata" v-model:model-str="cityStr" cityLevel="city" ></tm-city-picker>
 				 </tm-form-item>
 				<tm-form-item required label="设备使用前状态" field="preUseEquipmentStatus" :rules="[{ required: true, message: '必填' }]" >
-					<tm-radio-group v-model="sysEquipUse.preUseEquipmentStatus">
+					<tm-radio-group v-model.lazy="sysEquipUse.preUseEquipmentStatus">
 						<tm-radio label="正常" value="正常"></tm-radio>
 						<tm-radio label="异常" value="异常"></tm-radio>
 					</tm-radio-group>
 				</tm-form-item>
 				<tm-form-item required label="设备使用后状态" field="postUseEquipmentStatus" :rules="[{ required: true, message: '必填' }]" >
-					<tm-radio-group v-model="sysEquipUse.postUseEquipmentStatus">
+					<tm-radio-group v-model.lazy="sysEquipUse.postUseEquipmentStatus">
 						<tm-radio label="正常" value="正常"></tm-radio>
 						<tm-radio label="异常" value="异常"></tm-radio>
 					</tm-radio-group>
@@ -156,13 +156,13 @@
 					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="cityStr" :transprent="true" :showBottomBotder="false"> </tm-input>
 				 </tm-form-item>
 				<tm-form-item required label="设备使用前状态" field="preUseEquipmentStatus" :rules="[{ required: true, message: '必填' }]" >
-					<tm-radio-group v-model="sysEquipUse.preUseEquipmentStatus">
+					<tm-radio-group v-model.lazy="sysEquipUse.preUseEquipmentStatus">
 						<tm-radio disabled label="正常" value="正常"></tm-radio>
 						<tm-radio disabled label="异常" value="异常"></tm-radio>
 					</tm-radio-group>
 				</tm-form-item>
 				<tm-form-item required label="设备使用后状态" field="postUseEquipmentStatus" :rules="[{ required: true, message: '必填' }]" >
-					<tm-radio-group v-model="sysEquipUse.postUseEquipmentStatus">
+					<tm-radio-group v-model.lazy="sysEquipUse.postUseEquipmentStatus">
 						<tm-radio disabled label="正常" value="正常"></tm-radio>
 						<tm-radio disabled label="异常" value="异常"></tm-radio>
 					</tm-radio-group>
@@ -377,17 +377,16 @@
 	    success: (res: { scanType: string; result: string }) => {
 	      console.log('条码类型：' + res.scanType);
 	      console.log('条码内容：' + res.result);
-	
+		  
 	      try {
 			  // 确保 URL 包含协议头（如 https://）
 			  let url = res.result;
 			  if (!url.startsWith('http://') && !url.startsWith('https://')) {
-				url = 'https://' + url; // 假设默认使用 HTTPS
+			      url = 'https://' + url;
 			  }
-	  
 			  // 手动解析域名和参数
 			  const [protocolHost, ...rest] = url.split('/app/'); // 分割域名和路径
-			  const baseUrl = protocolHost || ''; // 获取 https://jc.sxjkgcjs.com:9103
+			  const baseUrl = protocolHost || ''; // 获取 https://jc.sxjkgcjs.com:9110
 			  const queryIndex = url.indexOf('?');
 			  const queryParams = queryIndex !== -1 ? url.slice(queryIndex + 1) : '';
 			  const id = queryParams.split('id=')[1]?.split('&')[0]; // 提取 id
@@ -396,46 +395,9 @@
 				uni.showToast({ title: 'URL中缺少ID参数', icon: 'none' });
 				return;
 			  }
-	  
-			  // 拼接新 API 地址（注意：POST 请求一般不需要在 URL 中带参数）
-			  const apiUrl = `${baseUrl}/detectionserver/pmtapi/foundation_App/getInstrument?id=` + id;
-			  console.log('新API地址:', apiUrl);
-	
-	        // 4. 发起请求
-	        uni.request({
-	          url: apiUrl,
-			  method:'POST',// 指定为 POST 方法
-			  data: {},
-			  header: {
-	            'Content-Type': 'application/json', // 根据 API 要求调整（如 'application/x-www-form-urlencoded'）
-				'Origin': 'https://jc.sxjkgcjs.com:9103',       // 强制声明来源
-				'Referer': 'https://jc.sxjkgcjs.com:9103/app/Instrument/index.html?id=' + id,
-				'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0'
-			  },
-	          success: (requestRes) => {
-	            // 直接解析 JSON 数据
-				console.log(requestRes);
-	            const resData = requestRes.data as {
-	              manage?: string;  // 声明字段类型（可选防止未定义报错）
-	              [key: string]: any; // 其他字段不强制声明
-	            };
-	
-	            // 检查必要字段
-	            if (!resData?.manage) {
-	              uni.showToast({ title: '数据中缺少设备编号', icon: 'none' });
-	              return;
-	            }
-	
-	            // 直接提取 manage 字段
-	            sysEquipUse.value.equipmentCode = resData.manage;
-	            console.log('设备编号:', sysEquipUse.value.equipmentCode);
-	            
-	          },
-	          fail: (err) => {
-	            console.error('请求失败:', err);
-	            uni.showToast({ title: '请求失败', icon: 'none' });
-	          }
-	        });
+			  sysEquipUse.value.equipmentCode = id;
+			  console.log('设备编号:', sysEquipUse.value.equipmentCode);
+			  
 	      } catch (error) {
 	        console.error('URL解析失败:', error);
 	        uni.showToast({ title: '无效的二维码链接', icon: 'none' });
@@ -447,7 +409,6 @@
 	    }
 	  });
 	};
-
 
 
 	// 地点校验

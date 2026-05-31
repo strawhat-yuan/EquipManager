@@ -71,6 +71,12 @@
         </template>
       </el-table-column>
       <el-table-column prop="type" label="出入库类型"  sortable="custom"/>
+      <el-table-column prop="equipmentStatus" label="出入库设备状态"  sortable="custom">
+        <template scope="scope">
+          <span v-if="scope.row.equipmentStatus === 1">正常</span>
+          <span v-else-if="scope.row.equipmentStatus === 0">异常</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="equipmentCode" label="设备编号" sortable="custom"/>
       <el-table-column prop="equipmentName" label="设备名称" sortable="custom"/>
       <el-table-column prop="equipmentDate" label="出入库日期" sortable="custom"/>
@@ -157,6 +163,10 @@
           <el-radio v-model="sysEquipStock.type" label="出库">出库</el-radio>
           <el-radio v-model="sysEquipStock.type" label="入库">入库</el-radio>
         </el-form-item>
+        <el-form-item label="出入库设备状态"  prop="equipmentStatus">
+          <el-radio v-model="sysEquipStock.equipmentStatus" :label="1">正常</el-radio>
+          <el-radio v-model="sysEquipStock.equipmentStatus" :label="0">异常</el-radio>
+        </el-form-item>
         <el-form-item label="备注"   prop="remarks">
           <el-input v-model="sysEquipStock.remarks" />
         </el-form-item>
@@ -221,6 +231,9 @@ export default {
           { required: true, message : '必填'},
         ],
         type:[
+          { required: true, message : '必填'},
+        ],
+        equipmentStatus:[
           { required: true, message : '必填'},
         ],
         remarks:[

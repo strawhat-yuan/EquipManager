@@ -79,7 +79,7 @@
       <el-table-column prop="receiverEmployeeCode" label="接收人编号" sortable="custom"/>
       <el-table-column prop="receiverEmployeeName" label="接收人姓名" sortable="custom"/>
       <el-table-column prop="transferDate" label="交接日期" sortable="custom"/>
-      <el-table-column prop="transferLocation" label="新任务地点" />
+      <el-table-column prop="transferLocation" label="交接地点" />
       <el-table-column prop="remarks" label="备注" />
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
@@ -160,7 +160,7 @@
           <el-input v-model="sysEquipTransfer.receiverEmployeeCode" />
         </el-form-item>
         <el-form-item label="交接日期" prop = "transferDate">
-          <el-date-picker disabled 
+          <el-date-picker disabled
             v-model="sysEquipTransfer.transferDate"
             type="date"
             placeholder="选择日期"
@@ -168,7 +168,7 @@
             @input="dateChange">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="新任务地点" prop = "transferLocation">
+        <el-form-item label="交接地点" prop = "transferLocation">
           <el-cascader
             size="large"
             :options="pcTextArr"
@@ -223,7 +223,7 @@ export default {
 
       pcTextArr,//省市二级地址，纯汉字
       selectedLocations:[],// 选中的省市地址数据
-      
+
       oldTaskCodeParts: { year: '', number: '' },//旧任务编号组件
       newTaskCodeParts: { year: '', number: '' },//新任务编号组件
 
@@ -270,7 +270,7 @@ export default {
     validateOldTaskCode(rule, value ,callback){
       // const yearPattern = /^\d{4}$/; // 4位数字
       // const numberPattern = /^\d{3}$/; // 3位数字
-      
+
       if (!this.oldTaskCodeParts.year || !this.oldTaskCodeParts.number) {
         callback(new Error("年份和序列号为必填项"));
       // } else if (!yearPattern.test(this.oldTaskCodeParts.year)) {
@@ -282,12 +282,12 @@ export default {
         callback();
       }
     },
-    
+
     //新任务编号校验
     validateNewTaskCode(rule, value ,callback){
       // const yearPattern = /^\d{4}$/; // 4位数字
       // const numberPattern = /^\d{3}$/; // 3位数字
-      
+
       if (!this.newTaskCodeParts.year || !this.newTaskCodeParts.number) {
         callback(new Error("年份和序列号为必填项"));
       // } else if (!yearPattern.test(this.newTaskCodeParts.year)) {
@@ -304,7 +304,7 @@ export default {
     taskCodeSplit(fullCode){
       // // 使用正则表达式匹配并提取年份和序列号
       // const regex = /^RW-(\d{4})-(\d{3})$/;
-      
+
       // 正则表达式：匹配 "RW-xxx-yyy"，xxx 和 yyy 可为任意字符
       const regex = /^RW-(.+?)-(.+)$/;
       const matches = fullCode.match(regex);

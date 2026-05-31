@@ -42,7 +42,7 @@
           </el-row>
         </el-form>
       </div>
-  
+
       <!-- 添加工具条 -->
       <div class="tools-div">
         <el-button type="success" icon="el-icon-plus" size="mini" @click="add"
@@ -52,7 +52,7 @@
           >批量删除</el-button
         >
       </div>
-  
+
       <el-table
         v-loading="listLoading"
         :data="list"
@@ -64,13 +64,19 @@
         :sort-orders="['ascending','descending']"
       >
         <el-table-column type="selection" />
-  
+
         <el-table-column label="序号" width="70" align="center">
           <template slot-scope="scope">
             {{ (page - 1) * limit + scope.$index + 1 }}
           </template>
         </el-table-column>
         <el-table-column prop="type" label="出入库类型"  sortable="custom"/>
+        <el-table-column prop="equipmentStatus" label="出入库设备状态"  sortable="custom">
+          <template scope="scope">
+            <span v-if="scope.row.equipmentStatus === 1">正常</span>
+            <span v-else-if="scope.row.equipmentStatus === 0">异常</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="equipmentCode" label="设备编号" sortable="custom"/>
         <el-table-column prop="equipmentName" label="设备名称" sortable="custom"/>
         <el-table-column prop="equipmentDate" label="出入库日期" sortable="custom"/>
@@ -105,7 +111,7 @@
           </template>
         </el-table-column>
       </el-table>
-  
+
       <!-- 分页组件 -->
       <el-pagination
         @size-change="handleSizeChange"
@@ -116,7 +122,7 @@
         style="padding: 30px 0; text-align: center;"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"/>
-  
+
       <!-- 添加、修改 弹框 -->
       <el-dialog title="添加/修改" :visible.sync="dialogVisible" width="40%">
         <el-form
@@ -163,6 +169,10 @@
             <el-radio v-model="sysEquipStock.type" label="出库">出库</el-radio>
             <el-radio v-model="sysEquipStock.type" label="入库">入库</el-radio>
           </el-form-item>
+          <el-form-item label="出入库设备状态"  prop="equipmentStatus">
+            <el-radio v-model="sysEquipStock.equipmentStatus" :label="1">正常</el-radio>
+            <el-radio v-model="sysEquipStock.equipmentStatus" :label="0">异常</el-radio>
+          </el-form-item>
           <el-form-item label="备注"  prop="remarks">
             <el-input v-model="sysEquipStock.remarks" />
           </el-form-item>
@@ -202,15 +212,15 @@
         searchObj: {}, // 查询条件
         column:'createTime',//排序字段
         sortorder:'descending',//升降序条件
-  
+
         dialogVisible: false, //弹框
         sysEquipStock: {}, //封装添加表单数据
         multipleSelection: [], // 批量删除选中的记录列表
         equipmentDates: [],// 查询日期范围
         isYearSpecialTask: true,
 
-        taskCodeParts: { year: '', number: '' },    
-        
+        taskCodeParts: { year: '', number: '' },
+
         rules:{//表单校验规则
           //任务编号自定义验证规则，验证两个组件。
           taskCode:[
@@ -243,12 +253,12 @@
       this.fetchData();
     },
     methods: {
-      
+
       //任务编号校验
       validateTaskCode(rule, value ,callback){
         // const yearPattern = /^\d{4}$/; // 4位数字
         // const numberPattern = /^\d{3}$/; // 3位数字
-        
+
         if (!this.taskCodeParts.year || !this.taskCodeParts.number) {
           callback(new Error("年份和序列号为必填项"));
         // } else if (!yearPattern.test(this.taskCodeParts.year)) {
@@ -265,7 +275,7 @@
       taskCodeSplit(fullCode){
         // // 使用正则表达式匹配并提取年份和序列号
         // const regex = /^RW-(\d{4})-(\d{3})$/;
-      
+
         // 正则表达式：匹配 "RW-xxx-yyy"，xxx 和 yyy 可为任意字符
         const regex = /^RW-(.+?)-(.+)$/;
         const matches = fullCode.match(regex);
@@ -291,20 +301,20 @@
           this.$forceUpdate()
         })
       },
-  
+
       // 当多选选项发生变化的时候调用
       handleSelectionChange(selection) {
         console.log(selection);
         this.multipleSelection = selection;
       },
-  
+
       // 每页显示记录数改变
       handleSizeChange(currentLimit){
         this.limit = currentLimit;
         this.fetchData();
         //console.log(this.limit);
       },
-  
+
       // 表格排序
       onSortChange({prop,order}){
         this.column = prop;
@@ -313,7 +323,7 @@
         // console.log(this.sortorder)
         this.fetchData()
       },
-  
+
       // 批量删除
       batchRemove() {
         if (this.multipleSelection.length === 0) {
@@ -361,7 +371,7 @@
       saveOrUpdate() {
         // 根据year的格式，非'2025'或'2025检测'类似的格式，则isTransfer = 1，否则是2。
         this.isYearSpecialTask = /^\d+(检测)?$/.test(this.taskCodeParts.year || '')
-        this.sysEquipStock.isTransfer =  this.isYearSpecialTask ? 1 : 2 
+        this.sysEquipStock.isTransfer =  this.isYearSpecialTask ? 1 : 2
         console.log("isTranfer = ", this.sysEquipStock.isTransfer)
 
         //任务编号拼接
@@ -409,7 +419,7 @@
           this.fetchData();
         });
       },
-  
+
       //弹出添加的表单
       add() {
         this.dialogVisible = true;
@@ -418,7 +428,7 @@
         this.sysEquipStock.equipmentDate =  new Date();
         this.$set(this.sysEquipStock,'warehouseManagerCode','18229097903');
       },
-  
+
        // 根据id删除数据
        removeDataById(id) {
         // debugger
@@ -448,7 +458,7 @@
         this.sortorder = 'descending';
         this.fetchData();
       },
-  
+
       //条件分页查询
       fetchData(pageNum = 1) {
         this.page = pageNum;
@@ -467,4 +477,3 @@
     },
   };
   </script>
-  

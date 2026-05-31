@@ -18,6 +18,7 @@
             <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
             <result property="isAdditional" column="is_additional" jdbcType="TINYINT"/>
             <result property="isTransfer" column="is_transfer" jdbcType="TINYINT"/>
+            <result property="equipmentStatus" column="equipment_status" jdbcType="TINYINT"/>
             <result property="userName" column="user_name" jdbcType="VARCHAR"/>
             <result property="warehouseManagerName" column="warehouse_manager_name" jdbcType="VARCHAR"/>
             <result property="equipmentName" column="equipment_name" jdbcType="VARCHAR"/>
@@ -28,7 +29,7 @@
         user_code,task_code,remarks,
         type,warehouse_manager_code,create_time,
         update_time,is_deleted,is_additional,
-        is_transfer,user_name,warehouse_manager_name,
+        is_transfer,equipment_name,user_name,warehouse_manager_name,
         equipment_name
     </sql>
 </mapper>

@@ -41,7 +41,7 @@
           </el-row>
         </el-form>
       </div>
-  
+
       <!-- 添加工具条 -->
       <div class="tools-div">
         <el-button type="success" icon="el-icon-plus" size="mini" @click="add"
@@ -51,7 +51,7 @@
           >批量删除</el-button
         >
       </div>
-  
+
       <el-table
         v-loading="listLoading"
         :data="list"
@@ -64,7 +64,7 @@
         :sort-orders="['ascending','descending']"
       >
         <el-table-column type="selection" />
-  
+
         <el-table-column label="序号" width="70" align="center">
           <template slot-scope="scope">
             {{ (page - 1) * limit + scope.$index + 1 }}
@@ -79,7 +79,7 @@
         <el-table-column prop="receiverEmployeeCode" label="接收人编号" sortable="custom"/>
         <el-table-column prop="receiverEmployeeName" label="接收人姓名" sortable="custom"/>
         <el-table-column prop="transferDate" label="交接日期" sortable="custom"/>
-        <el-table-column prop="transferLocation" label="新任务地点" />
+        <el-table-column prop="transferLocation" label="交接地点" />
         <el-table-column prop="remarks" label="备注" />
         <el-table-column prop="isAdditional" label="是否补充记录" >
           <template scope="scope">
@@ -106,7 +106,7 @@
           </template>
         </el-table-column>
       </el-table>
-  
+
       <!-- 分页组件 -->
       <el-pagination
         @size-change="handleSizeChange"
@@ -117,7 +117,7 @@
         style="padding: 30px 0; text-align: center;"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"/>
-  
+
       <!-- 添加、修改 弹框 -->
       <el-dialog title="添加/修改" :visible.sync="dialogVisible" width="40%">
         <el-form
@@ -174,7 +174,7 @@
               @input="dateChange">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="新任务地点" prop = "transferLocation">
+          <el-form-item label="交接地点" prop = "transferLocation">
             <el-cascader
               size="large"
               :options="pcTextArr"
@@ -223,15 +223,15 @@
         searchObj: {}, // 查询条件
         column:'createTime',//排序字段
         sortorder:'descending',//升降序条件
-  
+
         dialogVisible: false, //弹框
         sysEquipTransfer: {}, //封装添加表单数据
         multipleSelection: [], // 批量删除选中的记录列表
         transferDates: [], //查询日期范围
-  
+
         pcTextArr,//省市二级地址，纯汉字
         selectedLocations:[],// 选中的省市地址数据
-          
+
         oldTaskCodeParts: { year: '', number: '' },//旧任务编号组件
         newTaskCodeParts: { year: '', number: '' },//新任务编号组件
         rules:{// 表单校验规则
@@ -268,14 +268,14 @@
     created() {
       this.fetchData();
     },
-  
+
     methods: {
 
       //旧任务编号校验
       validateOldTaskCode(rule, value ,callback){
         // const yearPattern = /^\d{4}$/; // 4位数字
         // const numberPattern = /^\d{3}$/; // 3位数字
-        
+
         if (!this.oldTaskCodeParts.year || !this.oldTaskCodeParts.number) {
           callback(new Error("年份和序列号为必填项"));
         // } else if (!yearPattern.test(this.oldTaskCodeParts.year)) {
@@ -287,12 +287,12 @@
           callback();
         }
       },
-      
+
       //新任务编号校验
       validateNewTaskCode(rule, value ,callback){
         // const yearPattern = /^\d{4}$/; // 4位数字
         // const numberPattern = /^\d{3}$/; // 3位数字
-        
+
         if (!this.newTaskCodeParts.year || !this.newTaskCodeParts.number) {
           callback(new Error("年份和序列号为必填项"));
         // } else if (!yearPattern.test(this.newTaskCodeParts.year)) {
@@ -309,7 +309,7 @@
       taskCodeSplit(fullCode){
         // // 使用正则表达式匹配并提取年份和序列号
         // const regex = /^RW-(\d{4})-(\d{3})$/;
-      
+
         // 正则表达式：匹配 "RW-xxx-yyy"，xxx 和 yyy 可为任意字符
         const regex = /^RW-(.+?)-(.+)$/;
         const matches = fullCode.match(regex);
@@ -335,7 +335,7 @@
           this.$forceUpdate()
         })
       },
-  
+
       // 地址选择变化时调用
       handleLocationChange(value){
         // console.log(value);
@@ -344,20 +344,20 @@
         this.sysEquipTransfer.transferLocation += value[1];
         // console.log(this.sysEquipTransfer.transferLocation);
       },
-  
+
       // 当多选选项发生变化的时候调用
       handleSelectionChange(selection) {
         console.log(selection);
         this.multipleSelection = selection;
       },
-  
+
       // 每页显示记录数改变时调用
       handleSizeChange(currentLimit){
         this.limit = currentLimit;
         this.fetchData();
         //console.log(this.limit);
       },
-  
+
       // 表格排序
       onSortChange({prop,order}){
         this.column = prop;
@@ -366,7 +366,7 @@
         // console.log(this.sortorder)
         this.fetchData()
       },
-  
+
       // 批量删除
       batchRemove() {
         if (this.multipleSelection.length === 0) {
@@ -400,7 +400,7 @@
           });
         });
       },
-  
+
       //修改-数据回显
       edit(id) {
         this.dialogVisible = true;
@@ -414,8 +414,8 @@
           this.newTaskCodeParts = this.taskCodeSplit(this.sysEquipTransfer.newTaskCode);
         });
       },
-  
-  
+
+
       // 地址数据回显格式分割转换
       locationSplit(address){
           // console.log("locationSplit in")
@@ -455,7 +455,7 @@
             // console.log(this.selectedLocations);
           }
       },
-    
+
       //添加或修改
       saveOrUpdate() {
         //任务编号拼接
@@ -475,7 +475,7 @@
           }
         })
       },
-  
+
       //修改方法
       updateEquipTransfer() {
         api.update(this.sysEquipTransfer).then((response) => {
@@ -490,7 +490,7 @@
           this.fetchData();
         });
       },
-  
+
       //添加
       saveEquipTransfer() {
         api.saveEquipTransfer(this.sysEquipTransfer).then((response) => {
@@ -505,7 +505,7 @@
           this.fetchData();
         });
       },
-  
+
       //弹出添加的表单
       add() {
         this.dialogVisible = true;
@@ -544,7 +544,7 @@
         this.sortorder = 'descending';
         this.fetchData();
       },
-  
+
       //条件分页查询
       fetchData(pageNum = 1) {
         this.page = pageNum;
@@ -562,4 +562,3 @@
     },
   };
   </script>
-  

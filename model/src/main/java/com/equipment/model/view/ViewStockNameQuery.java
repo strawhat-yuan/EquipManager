@@ -84,6 +84,11 @@ public class ViewStockNameQuery implements Serializable {
     private Integer isTransfer;
 
     /**
+     * 出入库设备状态（0:异常 1:正常）
+     */
+    private Integer equipmentStatus;
+
+    /**
      * 员工姓名
      */
     private String userName;

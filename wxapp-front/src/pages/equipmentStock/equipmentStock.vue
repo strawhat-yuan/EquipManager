@@ -83,9 +83,15 @@
 					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipStock.warehouseManagerCode" :transprent="true" :showBottomBotder="false"> </tm-input>
 				</tm-form-item>
 				<tm-form-item required label="出入库类型" field="type" :rules="[{ required: true, message: '必填' }]" >
-					<tm-radio-group v-model="sysEquipStock.type">
+					<tm-radio-group v-model.lazy="sysEquipStock.type">
 						<tm-radio label="出库" value="出库"></tm-radio>
 						<tm-radio label="入库" value="入库"></tm-radio>
+					</tm-radio-group>
+				</tm-form-item>
+				<tm-form-item required label="出入库设备状态" field="equipmentStatus" :rules="[{ required: true, message: '必填' }]" >
+					<tm-radio-group v-model.lazy="sysEquipStock.equipmentStatus">
+						<tm-radio label="正常" value="1"></tm-radio>
+						<tm-radio label="异常" value="0"></tm-radio>
 					</tm-radio-group>
 				</tm-form-item>
 				<tm-form-item label="备注" field="remarks" :rules="[{}]" >
@@ -123,7 +129,7 @@
 				v-model:show="showModelDetail"
 				okText="返回"
 			>
-				<tm-form ref="form" :label-width="80" v-model="sysEquipStock">
+				<tm-form ref="detailform" :label-width="80" v-model="sysEquipStock">
 					<tm-form-item required label="设备编号" field="equipmentCode" :rules="[{ required: true, message: '必填' }]" >
 						<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipStock.equipmentCode" :transprent="true" :showBottomBotder="false"> </tm-input>
 					</tm-form-item>
@@ -150,9 +156,15 @@
 						<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipStock.warehouseManagerName" :transprent="true" :showBottomBotder="false"> </tm-input>
 					</tm-form-item>
 					<tm-form-item required label="出入库类型" field="type" :rules="[{ required: true, message: '必填' }]" >
-						<tm-radio-group v-model="sysEquipStock.type">
+						<tm-radio-group v-model.lazy="sysEquipStock.type">
 							<tm-radio disabled label="出库" value="出库"></tm-radio>
 							<tm-radio disabled label="入库" value="入库"></tm-radio>
+						</tm-radio-group>
+					</tm-form-item>
+					<tm-form-item required label="出入库设备状态" field="equipmentStatus" :rules="[{ required: true, message: '必填' }]" >
+						<tm-radio-group v-model.lazy="sysEquipStock.equipmentStatus">
+							<tm-radio disabled label="正常" value="1"></tm-radio>
+							<tm-radio disabled label="异常" value="0"></tm-radio>
 						</tm-radio-group>
 					</tm-form-item>
 					<tm-form-item label="备注" field="remarks" :rules="[{}]" >
@@ -198,6 +210,7 @@
 	  createTime?: string;
 	  updateTime?: string;
 	  isTransfer?: number;
+	  equipmentStatus?: string;
 	  isAdditional?: number;
 	  isDeleted?: number;
 	  taskCode?: string;
@@ -285,6 +298,7 @@
 	          { name: 'equipmentCode', label: '设备编号',fixed:false,width:130,emptyString:''},
 	          { name: 'equipmentName', label: '设备名称',sorter:false,emptyString:''},
 	          { name: 'type', label: '出入库类型' },
+			  { name: 'equipmentStatusText', label: '出入库设备状态' },
 	          { name: 'taskCode', label: '任务编号'},
 	          { name: 'equipmentDate', label: '出入库日期' },
 	          { name: 'userCode', label: '出入库人编号' },
@@ -354,12 +368,11 @@
 			  // 确保 URL 包含协议头（如 https://）
 			  let url = res.result;
 			  if (!url.startsWith('http://') && !url.startsWith('https://')) {
-				url = 'https://' + url; // 假设默认使用 HTTPS
+			      url = 'https://' + url;
 			  }
-	  
 			  // 手动解析域名和参数
 			  const [protocolHost, ...rest] = url.split('/app/'); // 分割域名和路径
-			  const baseUrl = protocolHost || ''; // 获取 https://jc.sxjkgcjs.com:9103
+			  const baseUrl = protocolHost || ''; // 获取 https://jc.sxjkgcjs.com:9110
 			  const queryIndex = url.indexOf('?');
 			  const queryParams = queryIndex !== -1 ? url.slice(queryIndex + 1) : '';
 			  const id = queryParams.split('id=')[1]?.split('&')[0]; // 提取 id
@@ -368,46 +381,9 @@
 				uni.showToast({ title: 'URL中缺少ID参数', icon: 'none' });
 				return;
 			  }
-	  
-			  // 拼接新 API 地址（注意：POST 请求一般不需要在 URL 中带参数）
-			  const apiUrl = `${baseUrl}/detectionserver/pmtapi/foundation_App/getInstrument?id=` + id;
-			  console.log('新API地址:', apiUrl);
-	
-	        // 4. 发起请求
-	        uni.request({
-	          url: apiUrl,
-			  method:'POST',// 指定为 POST 方法
-			  data: {},
-			  header: {
-                'Content-Type': 'application/json', // 根据 API 要求调整（如 'application/x-www-form-urlencoded'）
-				'Origin': 'https://jc.sxjkgcjs.com:9103',       // 强制声明来源
-				'Referer': 'https://jc.sxjkgcjs.com:9103/app/Instrument/index.html?id=' + id,
-				'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0'
-			  },
-	          success: (requestRes) => {
-	            // 直接解析 JSON 数据
-				console.log(requestRes);
-	            const resData = requestRes.data as {
-	              manage?: string;  // 声明字段类型（可选防止未定义报错）
-	              [key: string]: any; // 其他字段不强制声明
-	            };
-	
-	            // 检查必要字段
-	            if (!resData?.manage) {
-	              uni.showToast({ title: '数据中缺少设备编号', icon: 'none' });
-	              return;
-	            }
-	
-	            // 直接提取 manage 字段
-	            sysEquipStock.value.equipmentCode = resData.manage;
-	            console.log('设备编号:', sysEquipStock.value.equipmentCode);
-	            
-	          },
-	          fail: (err) => {
-	            console.error('请求失败:', err);
-	            uni.showToast({ title: '请求失败', icon: 'none' });
-	          }
-	        });
+			  sysEquipStock.value.equipmentCode = id;
+			  console.log('设备编号:', sysEquipStock.value.equipmentCode);
+			  
 	      } catch (error) {
 	        console.error('URL解析失败:', error);
 	        uni.showToast({ title: '无效的二维码链接', icon: 'none' });
@@ -516,6 +492,8 @@
 		sysEquipStock.value.userCode = mainStore.username
 		// 将仓库管理员编号设置为：18229097903，余坛会，作为默认值。
 		sysEquipStock.value.warehouseManagerCode = '18229097903'
+		// 将出入库设备状态设置为1，正常，作为默认值
+		sysEquipStock.value.equipmentStatus = '1'
 
 		initialObject(taskCodeParts.value)
 		console.log("add!")
@@ -537,7 +515,9 @@
 		//数据回显
 		//(item.id!)表示非空断言
 		sysEquipStock.value = await getEquipStockById(item.id!)
-
+		
+		sysEquipStock.value.equipmentStatus = String(sysEquipStock.value.equipmentStatus)
+		
 		initialObject(taskCodeParts.value)
 		taskCodeParts.value = taskCodeSplit(sysEquipStock.value.taskCode!)
 		dateStr.value = sysEquipStock.value.equipmentDate!
@@ -586,6 +566,8 @@
 		taskCodeParts.value = taskCodeSplit(sysEquipStock.value.taskCode!)
 		dateStr.value = sysEquipStock.value.equipmentDate!
 
+		sysEquipStock.value.equipmentStatus = String(sysEquipStock.value.equipmentStatus)
+		
 		console.log("detail!")
 	}
 	
@@ -607,7 +589,13 @@
 			sortOption.value.column,
 			sortOption.value.sortorder
 		)
-		list.value = res.records
+		
+		// 设备出入库状态，根据0，异常；1，正常，进行显示
+		list.value = res.records.map(item => ({
+			...item,
+			equipmentStatusText: item.equipmentStatus == 1 ? '正常' : '异常'
+		}))
+		
 		// 这个total是总记录数不是总页数
 		pagination.value.total = res.total
 		console.log(res)

@@ -59,6 +59,12 @@ public class SysEquipmentStock extends BaseEntity implements Serializable {
      */
     private Integer isTransfer;
 
+
+    /**
+     * 出入库设备状态（0:异常 1:正常）
+     */
+    private Integer equipmentStatus;
+
     /**
      * 是否补充记录（0:否，真实 1:是，后续补充）
      */
